@@ -1,4 +1,4 @@
-name: Build Android APK
+name: Build Cyber NOC APK
 
 on:
   push:
@@ -15,38 +15,42 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Java
+      - name: Setup Java
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Set up Flutter
+      - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
+          cache: true
 
-      - name: Generate Android project files
-        run: flutter create --platforms=android .
-
-      - name: Enable internet permission in AndroidManifest
+      - name: Generate Android Platform
         run: |
+          flutter create --platforms=android --org com.cybernoc.dwr921 .
           sed -i 's/<application/<uses-permission android:name="android.permission.INTERNET"\/>\n    <application/' android/app/src/main/AndroidManifest.xml
 
-      - name: Get dependencies
-        run: flutter pub get
+      - name: Get Dependencies & Build APKs
+        run: |
+          flutter pub get
+          flutter build apk --debug
+          flutter build apk --release
 
-      - name: Build release APK
-        run: flutter build apk --release
-
-      - name: Upload APK Artifact
+      - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: app-release-apk
-          path: build/app/outputs/flutter-apk/app-release.apk
+          name: cyber-noc-apks
+          path: |
+            build/app/outputs/flutter-apk/app-debug.apk
+            build/app/outputs/flutter-apk/app-release.apk
 
-      - name: Upload APK Release
+      - name: Publish GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: v1.0.${{ github.run_number }}
-          files: build/app/outputs/flutter-apk/app-release.apk
+          tag_name: v2.1.${{ github.run_number }}
+          name: Cyber NOC v2.1.${{ github.run_number }}
+          files: |
+            build/app/outputs/flutter-apk/app-debug.apk
+            build/app/outputs/flutter-apk/app-release.apk
