@@ -1,10 +1,10 @@
-name: dwr921_tower_master
-description: DWR-921 Tower and Band Master via SSH
+name: dwr921_cyber_noc
+description: Cyber NOC Live LTE Monitor for D-Link DWR-921 C3
 publish_to: 'none'
-version: 1.0.0+1
+version: 2.1.0+1
 
 environment:
-  sdk: '>=3.0.0 <4.0.0'
+  sdk: '>=3.2.0 <4.0.0'
 
 dependencies:
   flutter:
